@@ -1,0 +1,221 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+body{
+    background-color: rgba(254, 255, 243, 0.673);
+}
+*{
+    font-family: "Montserrat", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    /* color: rgb(23, 23, 24); */
+    /* text-transform: capitalize; */
+}
+nav{
+    position: fixed;
+    width: 100%;
+    z-index: 47;
+}
+nav *{
+    color: black;
+
+}
+
+.hidden{
+    /* background-color: aqua; */
+    /* width: 40%; */
+}
+.hide-input{
+    border: 1px solid gray;
+    border-radius: 15px;
+    width: 100%;
+    height: 30px;
+    padding-left: 15px;
+}
+.subnav{
+    height: 30px;
+    width: 100%;
+    background-color: rgb(27, 52, 52);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.subnav p{
+    color: white;
+    font-size: 12px;
+}
+.nav-filter-div{
+    margin-left: 50px;
+    /* background-color: blueviolet; */
+}
+.filter-icon{
+    filter: invert(100%); 
+}
+.container{
+    width: 100%;
+    height: 100vh;
+    margin: auto;
+    /* background-color: aqua; */
+    padding-top: 180px;
+}
+.sect{
+    height: 90vh;
+    /* background-color: aqua; */
+    overflow-x: scroll;
+    scrollbar-width: thin;
+}
+.filter-div{
+    padding: 15px;
+    position: fixed;
+    top: 93px;
+    width: 370px;
+    border-radius: 10px;
+    margin-left: 20px;
+    background-color: rgb(255, 255, 255);
+    height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+.filter-div div{
+    height: 20%;
+
+}
+.filter-div span{
+    font-size: 22px;
+    width: 100%;
+    /* background-color: aqua; */
+}
+.filter-div select{
+    margin-top: 15px;
+    width: 100%;
+}
+.filter-brand{
+    width: 100%;
+}
+select{
+    /* z-index: 10000000000000;
+    background-color: black; */
+}
+.profile-container{
+    width: 100%;
+    /* margin: auto; */
+    height: 100vh;
+    background-color: chocolate;
+}
+.profile-icon{
+    width: 50%;
+    height: 30vh;
+    margin: auto;
+    background-color: cornflowerblue;
+}
+.main-container{
+    height: 100vh;
+    padding-top: 100px;
+}
+.addres-div{
+    height: 70vh;
+    width: 60%;
+    padding: 20px;
+margin-bottom: 100px;
+}
+.addres-div form{
+    height: 100%;
+    /* background-color: fuchsia; */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.addres-div input,select,textarea{
+    width: 47%;
+    /* background-color: aqua; */
+    height: 60px;
+    border:  1px solid grey;
+    border-radius: 3px;
+    padding-left: 15px;
+}
+.address-btn{
+    width: 20%;
+    height: 40px;
+    border-radius: 5px;
+}
+.address-span{
+    /* background-color: aqua; */
+    width: 100%;
+    height: 100%;
+    text-align: left;
+}
+
+/* animations */
+/* animations */
+/* animations */
+
+
+@keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-slideIn {
+          animation: slideIn 0.3s ease-out forwards;
+        }
+
+@keyframes slideInleft {
+  from {
+    opacity: 0;
+    transform: translatex(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translatex(0);
+  }
+}
+.animate-slideInleft {
+  animation: slideInleft 0.3s ease-out forwards;
+}
+/* Hide scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.custom-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+/* Custom Pagination (Carousel Dots) */
+.swiper-pagination-bullet {
+  background: rgba(0, 0, 0, 0.4) !important; /* Darker grey */
+  width: 6px !important;
+  height: 6px !important;
+  opacity: 0.7 !important;
+}
+.swiper-pagination-bullet-active {
+  background: rgba(0, 0, 0, 0.8) !important; /* More visible */
+  width: 8px !important;
+  height: 8px !important;
+}
+.footerimage{
+    z-index: ;
+    background-image: url("https://images.puma.com/image/upload/c_scale,f_auto,q_auto:good,w_1920/cms/images/101de710f43968ae991eb164ae7345a92162b50e?_a=BAMCkGfi0");
+}
+
+
+
+/* .container div{
+    animation: appear 5s linear;
+    animation-timeline: view();
+    animation-range: entry 0% cover 40%;
+} */
+
+@keyframes appear{
+    from{
+        opacity: 0;
+        scale: 0.4;
+    }
+    to{
+        opacity: 1;
+        scale: 1;
+    }
+}

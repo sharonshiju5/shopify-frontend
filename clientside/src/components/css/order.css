@@ -1,0 +1,18 @@
+@keyframes appear {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    60% {
+      opacity: 1;
+      transform: translateY(-5px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-appear {
+    animation: appear 0.7s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+  }
