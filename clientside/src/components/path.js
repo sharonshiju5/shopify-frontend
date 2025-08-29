@@ -1,2 +1,2 @@
-const APIURL = "http://13.60.182.161/api";
+const APIURL = "https://shopify-backend-render.onrender.com/api";
 export default APIURL
