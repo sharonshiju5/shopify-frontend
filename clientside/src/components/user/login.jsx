@@ -150,8 +150,9 @@ const Login = () => {
             login Account
             <ArrowRight size={18} />
           </button>
+          <button onClick={()=>navigate("/admin")}>login as admin</button>
         </form>
-        <p className="text-center mt-4 text-gray-500 text-sm text-gray-600 hover:text-gray-800 font-semibold transition-colors duration-200">
+        <p className="text-center mt-4  text-sm text-gray-600 hover:text-gray-800 font-semibold transition-colors duration-200">
             <Link to={"/forgetuser"}>
               forget password
             </Link>
