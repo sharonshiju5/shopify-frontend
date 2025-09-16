@@ -24,7 +24,7 @@ export const ProductLoader = () => (
       <div className="product-loader-line"></div>
       <div className="product-loader-line short"></div>
       <div className="product-loader-price"></div>
-    </div>
+    </div> 
   </div>
 );
 
