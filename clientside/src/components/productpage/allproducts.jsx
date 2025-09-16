@@ -5,6 +5,7 @@ import APIURL from '../path';
 import { Filter, X } from 'lucide-react';
 import Navbar from './nav';
 import Footer from './footer';
+import { PageLoader, ProductLoader } from '../LoaderVariants';
 
 const Allproduct = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ const Allproduct = () => {
   const [filteredItems, setFilteredItems] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [filterAnimating, setFilterAnimating] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
 
   const { category } = useParams();
   console.log(category);
@@ -34,14 +37,17 @@ const Allproduct = () => {
         console.log(product);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     }
+    setLoading(true);
     filter();
   }, [category]);
 
   useEffect(() => {
     // Apply filters whenever filter criteria change
-    if (wishlistItems.length > 0) {
+    if (wishlistItems.length > 0 && !loading) {
       let filtered = [...wishlistItems];
       
       // Apply price filter
@@ -67,7 +73,7 @@ const Allproduct = () => {
       
       setFilteredItems(filtered);
     }
-  }, [minPrice, maxPrice, sortBy, wishlistItems, selectedCategories]);
+  }, [minPrice, maxPrice, sortBy, wishlistItems, selectedCategories, loading]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -101,6 +107,7 @@ const Allproduct = () => {
 
   async function getcategory() {
     try {
+        setCategoriesLoading(true);
         const res=await axios.get(APIURL+"/category ")
         if (res.status==200) {
             const{categories}=res.data
@@ -111,6 +118,8 @@ const Allproduct = () => {
         
     } catch (error) {
         console.log(error);
+    } finally {
+        setCategoriesLoading(false);
     }
   }
   useEffect(()=>{
@@ -120,6 +129,7 @@ const Allproduct = () => {
 
   async function filteredprod() {
     try {
+        setLoading(true);
         const res=await axios.post(APIURL+"/products/filterd",{selectedCategories,minPrice,maxPrice})
         // console.log(res);
         if (res.status==200) {
@@ -128,11 +138,15 @@ const Allproduct = () => {
         }
     } catch (error) {
         console.log(error);
+    } finally {
+        setLoading(false);
     }
   }
   useEffect(()=>{
-    filteredprod()
-  },[minPrice,maxPrice,categories])
+    if(categories.length > 0) {
+      filteredprod()
+    }
+  },[minPrice,maxPrice,selectedCategories])
   console.log(filteredItems);
   
   return (
@@ -163,7 +177,13 @@ const Allproduct = () => {
         <div className="flex flex-col md:flex-row gap-6">
           {/* Product grid - takes remaining space */}
           <div className={`w-full transition-all duration-300 ease-in-out ${showFilters ? 'md:w-2/3' : 'w-full'}`}>
-            {filteredItems && filteredItems.length > 0 ? (
+            {loading ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+                {[...Array(6)].map((_, index) => (
+                  <ProductLoader key={index} />
+                ))}
+              </div>
+            ) : filteredItems && filteredItems.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
                 {filteredItems.map((item) => (
                   <div 
@@ -227,7 +247,12 @@ const Allproduct = () => {
               <div className="mb-6">
                 <h4 className="text-sm font-medium mb-3">Categories</h4>
                 <div className="space-y-2">
-                  {categories.map((cat, index) => (
+                  {categoriesLoading ? (
+                    [...Array(4)].map((_, index) => (
+                      <div key={index} className="h-6 bg-gray-200 rounded animate-pulse"></div>
+                    ))
+                  ) : (
+                    categories.map((cat, index) => (
                     <div 
                       key={cat} 
                       className="flex items-center transition-opacity duration-300" 
@@ -246,7 +271,8 @@ const Allproduct = () => {
                       />
                       <label htmlFor={`cat-${cat}`} className="text-sm">{cat}</label>
                     </div>
-                  ))}
+                  ))
+                  )}
                 </div>
               </div>
               

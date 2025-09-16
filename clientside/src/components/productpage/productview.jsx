@@ -7,6 +7,7 @@ import { Tag } from 'lucide-react';
 import sound from "../../assets/sound.mp3"
 import  "../css/sellerproduct.css";
 import { motion } from "framer-motion";
+import { PageLoader, ButtonLoader, ProductLoader } from '../LoaderVariants';
 const SellerProducts = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -16,6 +17,9 @@ const SellerProducts = () => {
     const[block,setblock]=useState(true)
     const [isOpen, setIsOpen] = useState(false);
     const[deltproduct,setdeltproduct]=useState()
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [offerLoading, setOfferLoading] = useState(false);
+    const [blockLoading, setBlockLoading] = useState(false);
     const userId = localStorage.getItem("userId"); 
     
 
@@ -26,13 +30,16 @@ const SellerProducts = () => {
     }
         async function fetchproduct() {
           try {
+                setLoading(true);
                 const res = await axios.post(APIURL + "/fetchproduct", {userId})
                 console.log(res);
                 const {products}=res.data
                 console.log(products);
                 setProducts(products)
               } catch (error) {
-                
+                setError("Failed to load products");
+              } finally {
+                setLoading(false);
               }
             }
     useEffect(() => {
@@ -45,6 +52,7 @@ const SellerProducts = () => {
       console.log(productId);
       
         try {
+          setDeleteLoading(true);
           setIsOpen(false);
           
             const res = await axios.post(APIURL + "/deleteproduct", {productId})
@@ -71,6 +79,8 @@ const SellerProducts = () => {
             
         } catch (error) {
             
+        } finally {
+          setDeleteLoading(false);
         }
     }
 
@@ -82,6 +92,7 @@ const SellerProducts = () => {
     
     async function addoffer(_id,offer) {
         try {
+            setOfferLoading(true);
             const res = await axios.post(APIURL + "/addoffer",{_id,offer} )
             const{msg}=res.data
             if (res.status==200) {
@@ -98,11 +109,14 @@ const SellerProducts = () => {
             }
         } catch (error) {
             console.log(error);
+        } finally {
+            setOfferLoading(false);
         }
     }
 
     async function blockProduct(_id) {
         try {
+            setBlockLoading(true);
             const res = await axios.post(APIURL + "/block",{_id} )
             const{msg}=res.data
             if (res.status==201) {
@@ -120,6 +134,8 @@ const SellerProducts = () => {
             }
         } catch (error) {
             console.log(error);
+        } finally {
+            setBlockLoading(false);
         }
     }
 
@@ -128,10 +144,18 @@ const SellerProducts = () => {
       <h2 className="text-xl font-semibold mb-4">Your Products</h2>
     
       {error && <p className="text-red-500">{error}</p>}
-      {!loading && products.length === 0 && <p>No products found.</p>}
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-        {products.map(product => (
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+          {[...Array(6)].map((_, index) => (
+            <ProductLoader key={index} />
+          ))}
+        </div>
+      ) : (
+        <>
+          {products.length === 0 && <p>No products found.</p>}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+            {products.map(product => (
           <div key={product._id} className="border p-3 md:p-4 rounded-lg shadow-lg flex flex-col">
             <div className="relative w-full pb-[56.25%] overflow-hidden rounded-md bg-gray-100">
               <img 
@@ -286,8 +310,10 @@ const SellerProducts = () => {
                 </div>
             </div>
           </div>
-        ))}
-      </div>
+            ))}
+          </div>
+        </>
+      )}
       
       <ToastContainer />
       
@@ -299,7 +325,8 @@ const SellerProducts = () => {
           <Editproduct prodId={productid}/>
         </div>
       )}
-    </div>    );
+    </div>
+    );
 };
 
 export default SellerProducts;

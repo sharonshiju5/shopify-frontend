@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 import APIURL from "../path.js"
 import axios from 'axios';
+import { ButtonLoader } from '../LoaderVariants';
 const Login = () => {
   const navigate=useNavigate()
   const [formData, setFormData] = useState({
@@ -14,6 +15,7 @@ const Login = () => {
   console.log(APIURL);
   
   const[pass,setPass]=useState(true)
+  const[loginLoading,setLoginLoading]=useState(false)
   function showpass() {
     setPass(!pass)
   }
@@ -27,6 +29,7 @@ const Login = () => {
     e.preventDefault();
     // console.log(formData);
   try {
+    setLoginLoading(true);
     const res = await axios.post(APIURL+"/login", formData);
     console.log(res.data.msg);
     
@@ -82,7 +85,9 @@ const Login = () => {
     });
   console.log(error);
   
-} 
+} finally {
+  setLoginLoading(false);
+}
  };
 
   return (
@@ -145,10 +150,15 @@ const Login = () => {
           <button
             type="submit"
             onClick={submit}
-            className="w-full py-2 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 transform hover:translate-y-[-2px] transition-all duration-200 hover:shadow-lg hover:from-gray-700 hover:to-gray-800 active:scale-95"
+            disabled={loginLoading}
+            className="w-full py-2 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 transform hover:translate-y-[-2px] transition-all duration-200 hover:shadow-lg hover:from-gray-700 hover:to-gray-800 active:scale-95 disabled:opacity-50"
             >
-            login Account
-            <ArrowRight size={18} />
+            {loginLoading ? <ButtonLoader text="Logging in..." /> : (
+              <>
+                login Account
+                <ArrowRight size={18} />
+              </>
+            )}
           </button>
           <button onClick={()=>navigate("/admin")}>login as admin</button>
         </form>

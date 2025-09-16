@@ -4,6 +4,7 @@ import { Link,useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import APIURL from '../path';
 import axios from 'axios';
+import { ButtonLoader } from '../LoaderVariants';
 const RegisterPage = () => {
     const navigate=useNavigate();
   const [formData, setFormData] = useState({
@@ -52,6 +53,7 @@ const RegisterPage = () => {
   const [emailerrorMsg, setemailErrorMsg] = useState("");
   const[phoneerrorMsg,setphoneerrorMsg]=useState("")
   const [disable, setDisable] = useState(true);
+  const [registerLoading, setRegisterLoading] = useState(false);
 
   const validatePassword = (password) => {
     if (password.length < 4) { 
@@ -143,6 +145,7 @@ const validateIndianPhone = (phone) => {
     e.preventDefault();
     console.log(formData);
     try {
+      setRegisterLoading(true);
       const res = await axios.post(APIURL+"/adduser", formData);
       console.log(res);
       console.log("created");
@@ -174,6 +177,8 @@ const validateIndianPhone = (phone) => {
         progress: undefined,
         theme: "light",
         });      
+    } finally {
+      setRegisterLoading(false);
     }
   };
 
@@ -399,10 +404,15 @@ const validateIndianPhone = (phone) => {
             {disable ? <p>complete the validation </p>:
           <button
           type="submit"
-          className="w-full py-2 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 transform hover:translate-y-[-2px] transition-all duration-200 hover:shadow-lg hover:from-gray-700 hover:to-gray-800 active:scale-95"
+          disabled={registerLoading}
+          className="w-full py-2 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg font-semibold flex items-center justify-center gap-2 transform hover:translate-y-[-2px] transition-all duration-200 hover:shadow-lg hover:from-gray-700 hover:to-gray-800 active:scale-95 disabled:opacity-50"
           >
-            Create Account
-            <ArrowRight size={18} />
+            {registerLoading ? <ButtonLoader text="Creating Account..." /> : (
+              <>
+                Create Account
+                <ArrowRight size={18} />
+              </>
+            )}
           </button>
           }
         </form>

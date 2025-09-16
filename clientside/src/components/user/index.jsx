@@ -15,6 +15,7 @@ import axios from "axios";
 import { motion } from "framer-motion";
 import APIURL from "../path";
 import Footer from "../productpage/footer";
+import { PageLoader, ProductLoader } from '../LoaderVariants';
 
 export default function HomePage({useremail}) {
   
@@ -71,6 +72,7 @@ export default function HomePage({useremail}) {
 useEffect(() => {
   async function fetchData() {
     try {      
+      setLoading(true);
       const user_id = localStorage.getItem("userId");
 
       const productsRes = await axios.post(APIURL + "/showproduct", 
@@ -109,6 +111,9 @@ useEffect(() => {
     <>
     <Navbar/> 
     
+    {loading ? (
+      <PageLoader text="Loading products..." />
+    ) : (
     <div className="container">
     <div className="max-w-7xl mx-auto px-4">
       {/* Banner */}
@@ -332,6 +337,7 @@ useEffect(() => {
 
     <Footer/>
     </div>
+    )}
     </>
   )
 }

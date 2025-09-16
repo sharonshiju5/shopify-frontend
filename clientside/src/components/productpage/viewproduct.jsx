@@ -6,6 +6,7 @@ import Nav from "./nav"
 import { ToastContainer, toast } from 'react-toastify';
 import RazorpayPayment from './payment';
 import Footer from './footer';
+import { PageLoader, ButtonLoader } from '../LoaderVariants';
 
 const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -19,15 +20,21 @@ const ProductDetail = () => {
   const user_id = localStorage.getItem("userId");
   const [sizes,setsize]=useState("")
   const { _id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const [cartLoading, setCartLoading] = useState(false);
+  const [addressLoading, setAddressLoading] = useState(false);
   
   useEffect(() => {
     async function showsingleproduct() {
       try {
+        setLoading(true);
         const res = await axios.post(APIURL + "/showsingleproduct", { _id });
         const { singleprod } = res.data;
         setsingleprod(singleprod);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     }
     showsingleproduct();
@@ -66,6 +73,7 @@ const ProductDetail = () => {
         return;
       }
       
+      setCartLoading(true);
       console.log("Adding to cart:", _id);
       const res = await axios.post(APIURL + "/addtocart", { _id, user_id ,sizes,quantity});
       console.log("Add to cart response:", res);
@@ -78,11 +86,14 @@ const ProductDetail = () => {
     } catch (error) {
       console.log("Add to cart error:", error);
       toast.error("Failed to add item to cart");
+    } finally {
+      setCartLoading(false);
     }
   }
 
   async function showaddress() {
     try {
+      setAddressLoading(true);
       const userId = user_id;
       const res = await axios.post(APIURL + "/showaddress", { userId });
       if (res.status === 200) {
@@ -101,6 +112,8 @@ const ProductDetail = () => {
         progress: undefined,
         theme: "light",
       });
+    } finally {
+      setAddressLoading(false);
     }
   }
 
@@ -154,7 +167,10 @@ console.log(sizes);
   return (
     <>
       <Nav />
-      <div className="max-w-7xl pt-18 mx-auto px-4">
+      {loading ? (
+        <PageLoader text="Loading product details..." />
+      ) : (
+        <div className="max-w-7xl pt-18 mx-auto px-4">
         {/* Top Banner */}
         <div className="bg-black text-white text-center py-2 -mx-4"></div>
         <div className="flex gap-2 text-gray-500 my-4">
@@ -271,10 +287,11 @@ console.log(sizes);
                   choose size first
                   </button>:
                   <button
-                    className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+                    className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50"
                     onClick={() => addtocart(singleprod._id)}
+                    disabled={cartLoading}
                   >
-                    Add to cart
+                    {cartLoading ? <ButtonLoader text="Adding..." /> : "Add to cart"}
                   </button>
                 ) : (
                   <button className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50">
@@ -283,10 +300,10 @@ console.log(sizes);
                 )}
                 <button 
                   onClick={showaddress} 
-                  className="bg-red-500 text-white px-8 py-2 rounded hover:bg-red-600"
-                  disabled={singleprod.stock === 0}
+                  className="bg-red-500 text-white px-8 py-2 rounded hover:bg-red-600 disabled:opacity-50"
+                  disabled={singleprod.stock === 0 || addressLoading}
                 >
-                  Buy Now
+                  {addressLoading ? <ButtonLoader text="Loading..." /> : "Buy Now"}
                 </button>
               </div>
             ) : (
@@ -405,7 +422,8 @@ console.log(sizes);
             </div>
           </div>
         )}
-      </div>
+        </div>
+      )}
       <Footer />
     </>
   );

@@ -9,7 +9,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import LoginPrompt from './LoginPrompt';
 import OrderLoadingScreen from './orderprocessing';
 import Footer from './footer';
-import RazorpayPayment from '../productpage/payment'; // Import the RazorpayPayment component
+import RazorpayPayment from '../productpage/payment';
+import { PageLoader, ButtonLoader } from '../LoaderVariants';
 
 const CartPage = () => {
   const [fullprice, setFullprice] = useState(0);
@@ -19,6 +20,8 @@ const CartPage = () => {
   const [addres, setaddres] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
+  const [cartLoading, setCartLoading] = useState(true);
+  const [addressLoading, setAddressLoading] = useState(false);
   
   const updateQuantity = (id, newQuantity) => {
     if (newQuantity < 1) return;
@@ -59,6 +62,7 @@ const CartPage = () => {
   useEffect(() => {
     async function showsingleproduct() {
       try {
+        setCartLoading(true);
         const res = await axios.post(APIURL + "/showcart", { user_id });
         console.log(res);
     
@@ -85,6 +89,8 @@ const CartPage = () => {
         console.log(error);
         setProducts([]);
         setFullprice(0);
+      } finally {
+        setCartLoading(false);
       }
     }
     
@@ -187,6 +193,7 @@ console.log(product);
 
   async function showaddress() {
     try {
+      setAddressLoading(true);
       const userId = user_id;
       const res = await axios.post(APIURL + "/showaddress", { userId });
       console.log(res);
@@ -206,6 +213,8 @@ console.log(product);
         progress: undefined,
         theme: "light",
       });
+    } finally {
+      setAddressLoading(false);
     }
   }
 
@@ -228,9 +237,13 @@ console.log(product);
                 </div>
               ) : ""}
               <div className="container mx-auto px-6 pb-16 flex-grow overflow-auto">
-                {/* Cart Table */}
-                <div className="overflow-x-auto max-w-full relative">          
-                  <table className="w-full min-w-max">
+                {cartLoading ? (
+                  <PageLoader text="Loading your cart..." />
+                ) : (
+                  <>
+                    {/* Cart Table */}
+                    <div className="overflow-x-auto max-w-full relative">          
+                      <table className="w-full min-w-max">
                     <thead>
                       <tr className="border-b">
                         <th className="py-4 text-left">Product</th>
@@ -341,13 +354,16 @@ console.log(product);
                       <button 
                       onClick={showaddress} 
                       className="w-full bg-red-500 text-white py-3 rounded hover:bg-red-600"
+                      disabled={addressLoading}
                       >
-                        Proceed to Checkout
+                        {addressLoading ? <ButtonLoader text="Loading..." /> : "Proceed to Checkout"}
                       </button>
                       }
                     </div>
                   </div>
-                </div>
+                    </div>
+                  </>
+                )}
               </div>
             </>
           )}

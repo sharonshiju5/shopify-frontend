@@ -5,12 +5,14 @@ import APIURL from '../path';
 import { Heading1 } from 'lucide-react';
 import Navbar from './nav';
 import Footer from './footer';
+import { PageLoader, ProductLoader } from '../LoaderVariants';
 
 const WishlistPage = () => {
   const navigate=useNavigate()
 
   const [wishlistItems,setwishlist ]=useState([])
   const [_id,setId]=useState("")
+  const [loading, setLoading] = useState(true);
 
   const { category } = useParams();
   console.log(category);
@@ -19,6 +21,7 @@ const WishlistPage = () => {
 
     async function filter() {
       try {
+        setLoading(true);
         const res=await axios.post(APIURL+"/filter",{category,user_id})
         // console.log(res);
         const{product}=res.data
@@ -28,6 +31,8 @@ const WishlistPage = () => {
       } catch (error) {
         console.log(error);
         
+      } finally {
+        setLoading(false);
       }
     }
     filter()
@@ -85,7 +90,13 @@ function viewprodcut(_id) {
     </div>
 
     {/* Wishlist items */}
-    {wishlistItems ? (
+    {loading ? (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        {[...Array(8)].map((_, index) => (
+          <ProductLoader key={index} />
+        ))}
+      </div>
+    ) : wishlistItems && wishlistItems.length > 0 ? (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
         {wishlistItems.map((item) => (
           <div 

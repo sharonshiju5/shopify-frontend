@@ -3,6 +3,7 @@ import { Image } from "lucide-react";
 import axios from "axios";
 import APIURL from "../path";
 import { ToastContainer, toast } from 'react-toastify';
+import { ButtonLoader } from '../LoaderVariants';
 
 
 const ProductForm = () => {
@@ -23,6 +24,7 @@ const ProductForm = () => {
   const [customSize, setCustomSize] = useState("");
   const [Customcategory, setCustomcategor] = useState("");
   const [imagePreviews, setImagePreviews] = useState([]);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const handleChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
@@ -84,6 +86,7 @@ const ProductForm = () => {
   const addProducts = async (e) => {
     e.preventDefault();
     try {
+        setSubmitLoading(true);
         const userId = localStorage.getItem("userId");
 
         const updatedProduct = { ...product, userId };
@@ -118,6 +121,8 @@ const ProductForm = () => {
       toast.error(error.response?.data.msg,error.response?.data.error || error.message);
 
         console.error("Error saving product:", error.response?.data || error.message);
+    } finally {
+        setSubmitLoading(false);
     }
 };
 
@@ -220,7 +225,9 @@ const ProductForm = () => {
         <button className="text-blue-500 border border-blue-500 px-4 py-2 rounded">Cancel</button>
         <div className="flex space-x-4">
           <button className="border border-gray-500 px-4 py-2 rounded">Draft</button>
-          <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+          <button type="submit" disabled={submitLoading} className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50">
+            {submitLoading ? <ButtonLoader text="Saving..." /> : "Save"}
+          </button>
         </div>
       </div>
       </form>
